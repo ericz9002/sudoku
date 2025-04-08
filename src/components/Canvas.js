@@ -40,14 +40,18 @@ export default function Canvas({board}){
         const colsMap = rowsColsMap.current.colsMap;
         const x = colsMap[col] + Math.round(xDelta / 2);
         const y = rowsMap[row] + Math.round(yDelta / 2);   
-        console.log(`in drawNum, x is ${x}, y is ${y}`);
+        if(board.current[row][col] !== null){
+            const currentColor = context.getImageData(x+5, y+5, 1, 1);
+            const color = `rgba(${currentColor.data})`;
+            colorCell(canvas, context, x, y, color);
+            
+        }
         context.fillStyle = "black";
         context.textAlign = "center";
         context.textBaseline = "middle";
         context.font = `${Math.round(yDelta / 2)}px Arial`;
         context.fillText(`${number}`, x, y);
         board.current[row][col] = number;
-        console.log(`board is ` , board.current);
     }
 
     function colorCell(canvas, context, x, y, color){
@@ -83,6 +87,9 @@ export default function Canvas({board}){
 
     function selectCell(canvas, context, x, y){
         const selectPosition = colorCell(canvas, context, x, y, "#9af5f2");
+        if(board.current[selectPosition[0]][selectPosition[1]] !== null){
+            drawNum(canvas, context, selectPosition[0], selectPosition[1], 9, 9, board.current[selectPosition[0]][selectPosition[1]]);
+        }
         selectedCell.current = selectPosition;
     }
 
