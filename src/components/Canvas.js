@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 
-export default function Canvas(){
+export default function Canvas({board}){
     function drawGrid(canvas, context, rows, cols){
         if(rows <= 1 || cols <= 1){
             return
@@ -148,7 +148,6 @@ export default function Canvas(){
     const rowsColsMap = useRef([]);
     const inputRef = useRef();
     const selectedCell = useRef(null);
-    const board = useRef(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     console.log('called Canvas function component');
     useEffect(()=>{
         const canvas = inputRef.current;

@@ -1,10 +1,10 @@
 
-import Canvas from './components/Canvas.js';
+import Game from './components/Game.js';
 
 
 
 export default function App(){
     return(
-        <Canvas />
+        <Game />
     )
 }
