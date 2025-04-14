@@ -1,11 +1,12 @@
 import Canvas from './Canvas.js';
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
 
 export default function Game(){
     function handleClick(){
-        console.log('clicked a button');
+        board.current = new Array(9).fill(null).map(() => new Array(9).fill(1));
     }
 
+    const [timesRestarted, setTimesRestarted] = useState(0);
     const board = useRef(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     return(
         <>

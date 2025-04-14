@@ -162,6 +162,7 @@ export default function Canvas({board}){
         
         const [rowsMap, colsMap] = drawGrid(canvas, context, 9, 9);
         rowsColsMap.current = {"rowsMap":rowsMap, "colsMap":colsMap}
+        console.log('rerendered, board is ', board.current);
     }, [])
     console.log('rowsColsMap is ', rowsColsMap);
     console.log('rowsColsMap.current is ', rowsColsMap.current);
