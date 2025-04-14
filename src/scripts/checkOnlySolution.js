@@ -42,15 +42,6 @@ export function getNumSolutions(board, solvedBoards, stopEarly = false){
 }
 
 function backTrack(board, availableMovesBoard, numSquaresSolved, solvedBoards, stopEarly = true){
-    let debug = false;
-    if(debug){
-        console.log('solved squares: ', numSquaresSolved[0]);
-        
-        printBoard(board);
-        process.stdout.write("---------------------------------------\n");
-        printAvailableMovesBoard(availableMovesBoard);
-        process.stdout.write("---------------------------------------\n");
-    }
     function iterateBoard(board, row, col, cb){
         let positions = new Set();
         for(let i = 0; i < board.length; ++i){
@@ -94,20 +85,14 @@ function backTrack(board, availableMovesBoard, numSquaresSolved, solvedBoards, s
     }
     let nextMovePosition = getNextMovePosition(availableMovesBoard, board);
     if(nextMovePosition === null){
-        if(debug)
-            process.stdout.write('return false1\n');
         return 0;
     }
     numSquaresSolved[0] += 1;
     const[row, col] = nextMovePosition;
-    if(debug)
-        process.stdout.write(`next move is (${row}, ${col})`);
     const nextMoves = Array.from(availableMovesBoard[row][col]);
     let totalNumBoards = 0;
     let solvedBoard = null;
     for(let nextMove of nextMoves){
-        if(debug)
-            process.stdout.write(`setting board[${row}][${col}] to ${board[row][col]}\n`);
         board[row][col] = nextMove;
         let availableMovesBoardCopy = copyAvailableMovesBoard(availableMovesBoard);
         iterateBoard(availableMovesBoardCopy, row, col, (board, row, col) => removeEntry(board, row, col, nextMove));
@@ -118,7 +103,6 @@ function backTrack(board, availableMovesBoard, numSquaresSolved, solvedBoards, s
                 solvedBoard[i] = board[i].slice();
             }
             solvedBoards.push(solvedBoard);
-            //need to undo this in next recursive call
         }
         if(stopEarly && localNumBoards >= 2){
             assert(localNumBoards === 2);
@@ -132,16 +116,7 @@ function backTrack(board, availableMovesBoard, numSquaresSolved, solvedBoards, s
         availableMovesBoard[row][col].delete(nextMove);
     }
     numSquaresSolved[0] -= 1;
-    if(totalNumBoards === 1){
-        board.length = 0;
-        for(let i = 0; i < solvedBoard.length; ++i){
-            board[i] = solvedBoard[i].slice();
-        }
-    }
     board[row][col] = null;
-    //printBoard(board);
-    if(debug)
-        process.stdout.write(`end return, returning ${totalNumBoards}\n'`);
     return totalNumBoards;
 }
 
@@ -153,118 +128,6 @@ function copyAvailableMovesBoard(availableMovesBoard){
         }
     }
     return copy;
-}
-
-function OGBackTrack(board, availableMovesBoard, numSquaresSolved, stopEarly = true, backTrackMoves){
-    let debug = false;
-    if(debug){
-        console.log('solved squares: ', numSquaresSolved[0]);
-        
-        printBoard(board);
-        process.stdout.write("---------------------------------------\n");
-        printAvailableMovesBoard(availableMovesBoard);
-        process.stdout.write("---------------------------------------\n");
-    }
-    function iterateBoard(board, row, col, cb){
-        let positions = new Set();
-        for(let i = 0; i < board.length; ++i){
-            if(cb(board, i, col)){
-                positions.add([i, col].toString());
-            }
-        }
-        for(let i = 0; i < board[row].length; ++i){
-            if(cb(board, row, i)){
-                positions.add([row, i].toString());
-            }
-        }
-        const subRow = Math.floor(row / 3) * 3;
-        const subCol = Math.floor(col / 3) * 3;
-        for(let i = subRow; i < subRow + 3; ++i){
-            for(let j = subCol; j < subCol + 3; ++j){
-                if(cb(board, i, j)){
-                    positions.add([i,j].toString());
-                }
-            }
-        }
-        return positions;
-    }
-
-    function removeEntry(availableMovesBoard, row, col, num){
-        if(availableMovesBoard[row][col].has(num)){
-            availableMovesBoard[row][col].delete(num);
-            return true;
-        }
-        return false;
-    }
-
-    function addEntry(availableMovesBoard, row, col, positions, num){
-        if(positions.has([row, col].toString())){
-            availableMovesBoard[row][col].add(num);
-        }
-        return null;
-    }
-    if(numSquaresSolved[0] === 81){
-        return 1;
-    }
-    let nextMovePosition = getNextMovePosition(availableMovesBoard, board);
-    if(nextMovePosition === null){
-        if(debug)
-            process.stdout.write('return false1\n');
-        return 0;
-    }
-    numSquaresSolved[0] += 1;
-    const[row, col] = nextMovePosition;
-    if(debug)
-        process.stdout.write(`next move is (${row}, ${col})`);
-    const nextMoves = Array.from(availableMovesBoard[row][col]);
-    if(backTrackMoves.length !== 0){
-        for(let backTrackMove of backTrackMoves){
-            availableMovesBoard[backTrackMove[0]][backTrackMove[1]].add(backTrackMove[2]);
-        }
-        backTrackMoves.length = 0;
-    }
-    let totalNumBoards = 0;
-    let solvedBoard = null;
-    for(let nextMove of nextMoves){
-        if(debug)
-            process.stdout.write(`setting board[${row}][${col}] to ${board[row][col]}\n`);
-        board[row][col] = nextMove;
-        let positions = iterateBoard(availableMovesBoard, row, col, (board, row, col) => removeEntry(board, row, col, nextMove));
-        let localNumBoards = OGBackTrack(board, availableMovesBoard, numSquaresSolved, stopEarly, backTrackMoves);
-        if(localNumBoards >= 1){
-            solvedBoard = [];
-            for(let i = 0; i < board.length; ++i){
-                solvedBoard[i] = board[i].slice();
-            }
-            positions.delete([row, col].toString());
-            backTrackMoves.push([row, col, nextMove]);
-            //need to undo this in next recursive call
-        }
-        if(stopEarly && localNumBoards >= 2){
-            assert(localNumBoards === 2);
-            return localNumBoards;
-        }
-        totalNumBoards += localNumBoards;
-        if(stopEarly && totalNumBoards >= 2){
-            assert(totalNumBoards === 2);
-            return totalNumBoards;
-        }
-        if(debug)
-            process.stdout.write(`adding ${nextMove} back, positions is ${positions}\n`)
-        iterateBoard(availableMovesBoard, row, col, (board, row, col) => addEntry(board, row, col, positions, nextMove));
-    }
-    numSquaresSolved[0] -= 1;
-    if(totalNumBoards === 1){
-        board.length = 0;
-        for(let i = 0; i < solvedBoard.length; ++i){
-            board[i] = solvedBoard[i].slice();
-        }
-    }
-    board[row][col] = null;
-    //printBoard(board);
-    if(debug)
-        process.stdout.write(`end return, returning ${totalNumBoards}\n'`);
-    return totalNumBoards;
 }
 
 function getAvailableMoves(board, row, col){
@@ -314,6 +177,7 @@ function getNextMovePosition(availableMovesBoard, board){
     }
 }
 
+//debug functions
 function printBoard(board){
     console.log('printing board:');
     for(let row of board){
@@ -346,22 +210,3 @@ function printAvailableMovesBoard(availableMovesBoard){
         process.stdout.write('\n');
     }
 }
-
-function testBoard(board){
-
-}
-    
-//printBoard(board);
-//let solvedBoard = checkOnlySolution(board);
-//printBoard(solvedBoard);
-//let time1 = new Date();
-//let solvedBoard2 = checkOnlySolution(board2);
-//let time2 = new Date();
-//console.log(`solved board 2 in ${(time2 - time1)/1000} seconds`)
-//printBoard(solvedBoard2);
-/*
-let time1 = new Date();
-let solvedBoard3 = checkOnlySolution(duplicateBoard);
-let time2 = new Date();
-console.log(`solved board 2 in ${(time2 - time1)/1000} seconds`)
-console.log(`solvedBoard3 is ${solvedBoard3}`)*/
