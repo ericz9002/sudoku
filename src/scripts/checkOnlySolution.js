@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import {printBoard} from './printBoard.js';
 
 export function checkOnlySolution(board){
     let boardCopy = [];
@@ -178,20 +179,6 @@ function getNextMovePosition(availableMovesBoard, board){
 }
 
 //debug functions
-function printBoard(board){
-    console.log('printing board:');
-    for(let row of board){
-        for(let ele of row){
-            if(ele === null){
-                process.stdout.write('.  ');
-            }
-            else{
-                process.stdout.write(`${ele}  `);
-            }
-        }
-        process.stdout.write('\n');
-    }
-}
 
 function printAvailableMovesBoard(availableMovesBoard){
     process.stdout.write(`printing availableMovesBoard[0][0]: ${availableMovesBoard[0][0]}\n`);
