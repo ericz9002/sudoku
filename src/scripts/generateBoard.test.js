@@ -1,4 +1,4 @@
-import { describe, test, expect} from 'vitest';
+import { describe, test, expect} from 'vitest'
 import {generateSolvedBoard, generateBoard} from "./generateBoard.js"
 import {checkOnlySolution} from "./checkOnlySolution.js"
 
