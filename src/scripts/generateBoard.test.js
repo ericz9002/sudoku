@@ -53,7 +53,6 @@ function validateSolvedBoard(board){
     }
     return true;
 }
-
 function validateBoard(board){
     function validateEntry(board, row, col){
         if(board[row][col] === null){
@@ -74,7 +73,7 @@ function validateBoard(board){
         for(let i = 0; i < board.length; ++i){
             if(board[i][col] !== null){
                 if(availableNums.has(board[i][col])){
-                    availableNums.delete(board[row][i]);
+                    availableNums.delete(board[i][col]);
                 }
                 else{
                     return false;
@@ -82,15 +81,17 @@ function validateBoard(board){
             }
         }
         availableNums = new Set([1,2,3,4,5,6,7,8,9]);
-        let subRow = Math.floor(row / 3);
-        let subCol = Math.floor(col / 3);
+        let subRow = Math.floor(row / 3) * 3;
+        let subCol = Math.floor(col / 3) * 3;
         for(let i = subRow; i < subRow + 3; ++i){
             for(let j = subCol; j < subCol + 3; ++j){
-                if(availableNums.has(board[i][j])){
-                    availableNums.delete(board[i][j])
-                }
-                else{
-                    return false;
+                if(board[i][j] !== null){
+                    if(availableNums.has(board[i][j])){
+                        availableNums.delete(board[i][j])
+                    }
+                    else{
+                        return false;
+                    }
                 }
             }
         }
@@ -152,10 +153,10 @@ describe('test generateSolvedBoard', ()=>{
         }
     })
 })
-/*
+
 describe('test generateBoard', ()=>{
-    test('generateBoard(19) should throw error', ()=>{
-        expect(generateBoard(19).toEqual(new Error('starting board should have at least 20 squares')));
+    test('generateBoard(24) should throw error', ()=>{
+        expect(generateBoard(24).toEqual(new Error('starting board should have at least 25 squares')));
     })
 
     test('test easy board generateBoard(40)', ()=>{
@@ -165,9 +166,9 @@ describe('test generateBoard', ()=>{
         expect(checkOnlySolution(board)).not.toEqual(null);
     })
 
-    test('test hard board generateBoard(20)', ()=>{
-        let board = generateBoard(20);
-        expect(countCells(board)).toEqual(20);
+    test('test hard board generateBoard(25)', ()=>{
+        let board = generateBoard(25);
+        expect(countCells(board)).toEqual(25);
         expect(validateBoard(board)).toEqual(true);
         expect(checkOnlySolution(board)).not.toEqual(null);
     })
@@ -180,4 +181,4 @@ describe('test generateBoard', ()=>{
         }
         expect(uniqueBoards.size).toBeGreaterThanOrEqual(5);
     })
-})*/
+})
