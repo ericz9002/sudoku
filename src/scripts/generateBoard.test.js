@@ -156,7 +156,7 @@ describe('test generateSolvedBoard', ()=>{
 
 describe('test generateBoard', ()=>{
     test('generateBoard(24) should throw error', ()=>{
-        expect(generateBoard(24).toEqual(new Error('starting board should have at least 25 squares')));
+        expect(()=>generateBoard(24).toThrowError('starting board should have at least 25 squares'));
     })
 
     test('test easy board generateBoard(40)', ()=>{
