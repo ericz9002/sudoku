@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import {printBoard} from './printBoard.js';
 
 export function checkOnlySolution(board){
@@ -106,12 +105,10 @@ function backTrack(board, availableMovesBoard, numSquaresSolved, solvedBoards, s
             solvedBoards.push(solvedBoard);
         }
         if(stopEarly && localNumBoards >= 2){
-            assert(localNumBoards === 2);
             return localNumBoards;
         }
         totalNumBoards += localNumBoards;
         if(stopEarly && totalNumBoards >= 2){
-            assert(totalNumBoards === 2);
             return totalNumBoards;
         }
         availableMovesBoard[row][col].delete(nextMove);

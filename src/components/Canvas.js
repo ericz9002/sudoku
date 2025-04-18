@@ -1,10 +1,12 @@
 import {useState, useEffect, useRef} from 'react';
 
-export default function Canvas({board}){
+export default function Canvas({board, updateBoard}){
     function drawGrid(canvas, context, rows, cols){
         if(rows <= 1 || cols <= 1){
             return
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.strokeStyle = "black";
         const width = canvas.width;
         const height = canvas.height;
         const yDelta = height / rows;
@@ -30,6 +32,17 @@ export default function Canvas({board}){
         context.fillText('.', 150, 150);
         return [rowsMap, colsMap]
     }
+
+    function drawBoard(canvas, context, board){
+        console.log('inside drawBoard, canvas is ', canvas);
+        for(let i = 0; i < board.length; ++i){
+            for(let j = 0; j < board[i].length; ++j){
+                if(board[i][j] !== null){
+                    drawNum(canvas, context, i, j, board.length, board[i].length, board[i][j]);
+                }
+            }
+        }
+    }
     
     function drawNum(canvas, context, row, col, numRows, numCols, number){
         const width = canvas.width;
@@ -40,7 +53,7 @@ export default function Canvas({board}){
         const colsMap = rowsColsMap.current.colsMap;
         const x = colsMap[col] + Math.round(xDelta / 2);
         const y = rowsMap[row] + Math.round(yDelta / 2);   
-        if(board.current[row][col] !== null){
+        if(board[row][col] !== null){
             const currentColor = context.getImageData(x+5, y+5, 1, 1);
             const color = `rgba(${currentColor.data})`;
             colorCell(canvas, context, x, y, color);
@@ -51,7 +64,7 @@ export default function Canvas({board}){
         context.textBaseline = "middle";
         context.font = `${Math.round(yDelta / 2)}px Arial`;
         context.fillText(`${number}`, x, y);
-        board.current[row][col] = number;
+        board[row][col] = number;
     }
 
     function colorCell(canvas, context, x, y, color){
@@ -87,8 +100,8 @@ export default function Canvas({board}){
 
     function selectCell(canvas, context, x, y){
         const selectPosition = colorCell(canvas, context, x, y, "#9af5f2");
-        if(board.current[selectPosition[0]][selectPosition[1]] !== null){
-            drawNum(canvas, context, selectPosition[0], selectPosition[1], 9, 9, board.current[selectPosition[0]][selectPosition[1]]);
+        if(board[selectPosition[0]][selectPosition[1]] !== null){
+            drawNum(canvas, context, selectPosition[0], selectPosition[1], 9, 9, board[selectPosition[0]][selectPosition[1]]);
         }
         selectedCell.current = selectPosition;
     }
@@ -97,10 +110,9 @@ export default function Canvas({board}){
         colorCell(canvas, context, x, y, "white");
         const prevRow = selectedCell.current[0];
         const prevCol = selectedCell.current[1];
-        console.log('in unSelectCell, board is ', board.current);
-        if(board.current[prevRow][prevCol] !== null){
+        if(board[prevRow][prevCol] !== null){
             console.log('here');
-            drawNum(canvas, context, prevRow, prevCol, 9, 9, board.current[prevRow][prevCol]);
+            drawNum(canvas, context, prevRow, prevCol, 9, 9, board[prevRow][prevCol]);
         }
         selectedCell.current = null;
     }
@@ -136,7 +148,7 @@ export default function Canvas({board}){
             const canvas = inputRef.current;
             const context = canvas.getContext('2d');
             const [row, col] = selectedCell.current;
-            drawNum(canvas, context, row, col, 9, 9, event.key);
+            updateBoard(row, col, event.key);
         }
     }
     function handleBlur(event){
@@ -155,17 +167,23 @@ export default function Canvas({board}){
     const rowsColsMap = useRef([]);
     const inputRef = useRef();
     const selectedCell = useRef(null);
-    console.log('called Canvas function component');
     useEffect(()=>{
         const canvas = inputRef.current;
         const context = canvas.getContext('2d');
         
         const [rowsMap, colsMap] = drawGrid(canvas, context, 9, 9);
-        rowsColsMap.current = {"rowsMap":rowsMap, "colsMap":colsMap}
-        console.log('rerendered, board is ', board.current);
+        rowsColsMap.current = {"rowsMap":rowsMap, "colsMap":colsMap};
+        console.log('upon render, board is ', board);
     }, [])
-    console.log('rowsColsMap is ', rowsColsMap);
-    console.log('rowsColsMap.current is ', rowsColsMap.current);
+    useEffect(() =>{
+        const canvas = inputRef.current;
+        const context = canvas.getContext('2d');
+        console.log('canvas is ' , canvas);
+        drawGrid(canvas, context, 9, 9);
+        drawBoard(canvas, context, board);
+    }, [board])
+
+
     return(
         <canvas tabIndex="0" height="300" width="300" ref={inputRef} onClick = {(event) => {handleClick(event)}} 
         onKeyDown = {(event)=>{handleKeyDown(event)}} onBlur = {(event) => {handleBlur(event)}}></canvas>
