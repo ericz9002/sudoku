@@ -146,6 +146,9 @@ export default function Canvas({board, updateBoard, boardColors}){
             const canvas = inputRef.current;
             const context = canvas.getContext('2d');
             const [row, col] = selectedCell.current;
+            if(parseInt(event.key) === board[row][col]){
+                return;
+            }
             updateBoard(row, col, parseInt(event.key), boardColors);
             selectedCell.current = null;
         }
