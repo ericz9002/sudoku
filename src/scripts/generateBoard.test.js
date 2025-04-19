@@ -160,23 +160,23 @@ describe('test generateBoard', ()=>{
     })
 
     test('test easy board generateBoard(40)', ()=>{
-        let board = generateBoard(40);
+        let [board, solvedBoard] = generateBoard(40);
         expect(countCells(board)).toEqual(40);
         expect(validateBoard(board)).toEqual(true);
-        expect(checkOnlySolution(board)).not.toEqual(null);
+        expect(checkOnlySolution(board)).toEqual(solvedBoard);
     })
 
     test('test hard board generateBoard(25)', ()=>{
-        let board = generateBoard(25);
+        let [board, solvedBoard] = generateBoard(25);
         expect(countCells(board)).toEqual(25);
         expect(validateBoard(board)).toEqual(true);
-        expect(checkOnlySolution(board)).not.toEqual(null);
+        expect(checkOnlySolution(board)).toEqual(solvedBoard);
     })
 
     test('at least 5/10 generated boards are unique for generateBoard(30)', ()=>{
         let uniqueBoards = new Set();
         for(let i = 0; i < 10; ++i){
-            let board = generateBoard(30);
+            let board = generateBoard(30)[0];
             uniqueBoards.add(board.toString());
         }
         expect(uniqueBoards.size).toBeGreaterThanOrEqual(5);

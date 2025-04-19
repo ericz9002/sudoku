@@ -4,7 +4,7 @@ import {useRef, useState} from 'react';
 import copyBoard from '../scripts/copyBoard.js';
 
 export default function Game(){
-    function handleClick(){
+    function newGame(){
         boardColors.current.map(() => new Array(9).fill(null));
         let numStartingSquares;
         if(difficulty.current === "Easy"){
@@ -19,14 +19,17 @@ export default function Game(){
         else{
             throw new Error(`difficulty.current is not one of the valid values: difficulty.current is ${difficulty.current}`);
         }
-        let newBoard = generateBoard(numStartingSquares);
+        let [newBoard, solvedNewBoard] = generateBoard(numStartingSquares);
         for(let i = 0; i < newBoard.length; ++i){
             originalBoard.current[i] = new Array(newBoard[i].length).fill(null);
+            solvedBoard.current[i] = new Array(newBoard[i].length).fill(null);
+            boardColors.current[i] = new Array(newBoard[i].length).fill(null);
             for(let j = 0; j < newBoard[i].length; ++j){
                 if(newBoard[i][j] !== null){
                     boardColors.current[i][j] = colors.startColor;
                     originalBoard.current[i][j] = newBoard[i][j];
                 }
+                solvedBoard.current[i][j] = solvedNewBoard[i][j];
             }
         }
         setBoard(newBoard);
@@ -91,10 +94,28 @@ export default function Game(){
         return duplicateEntries;
     }
 
+    function solveBoard(){
+        console.log('in solveBoard()');
+        for(let i = 0; i < board.length; ++i){
+            for(let j  = 0; j < board[i].length; ++j){
+                if(originalBoard.current[i][j] !== null){
+                    boardColors.current[i][j] = colors.startColor;
+                }
+                else if(boardColors.current[i][j] === null){
+                    boardColors.current[i][j] = colors.correctColor;
+                }
+            }
+        }
+        let solved = copyBoard(solvedBoard.current);
+        console.log('solved is ', solved);
+        setBoard(solved);
+    }
+
     const [timesRestarted, setTimesRestarted] = useState(0);
     const [board, setBoard] = useState(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const boardColors = useRef(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const originalBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
+    const solvedBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
     const difficulty = useRef('Easy');
     //colors refer to the drawing of the numbers on the sudoku board
     //startColor: numbers in the starting board
@@ -113,7 +134,8 @@ export default function Game(){
                 boardColors = {boardColors} colors = {colors}
                 originalBoard = {originalBoard}
             />
-            <button onClick = {handleClick}>New Game</button>
+            <button onClick = {newGame}>New Game</button>
+            <button onClick = {solveBoard}>Solve Board</button>
             <label>
                 Difficulty:
                 <select defaultValue="Easy" onChange = {(event) => difficulty.current = event.target.value}>

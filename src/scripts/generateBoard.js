@@ -1,4 +1,5 @@
 import {getNumSolutions} from "./checkOnlySolution.js"
+import copyBoard from "./copyBoard.js"
 
 export function generateSolvedBoard(){
     let board = new Array(9).fill(0).map(()=>{return new Array(9).fill(null)});
@@ -11,16 +12,18 @@ export function generateBoard(numStartingSquares, timeoutTime = 500){
     if(numStartingSquares < 25){
         throw new Error('starting board should have at least 25 squares')
     }
-    let board = generateBoardHelper(numStartingSquares, timeoutTime);
-    while(board === null){
-        board = generateBoardHelper(numStartingSquares, timeoutTime);
+    let returnVal = null;
+    while(returnVal === null){
+        returnVal = generateBoardHelper(numStartingSquares, timeoutTime);
     }
-    return board;
+    let [board, solvedBoard] = returnVal;
+    return [board, solvedBoard];
 }
 
 function generateBoardHelper(numStartingSquares, timeoutTime){
     let startTime = new Date();
     let board = generateSolvedBoard();
+    let solvedBoard = copyBoard(board);
     let filledPositions = new Set(Array.from(new Array(81).keys()));
     let ctr = 0;
     while(filledPositions.size > numStartingSquares){
@@ -42,7 +45,7 @@ function generateBoardHelper(numStartingSquares, timeoutTime){
             return null;
         }
     }
-    return board;
+    return [board, solvedBoard];
 }
 
 function backTrack(board, row, col){
