@@ -149,6 +149,7 @@ export default function Canvas({board, updateBoard}){
             const context = canvas.getContext('2d');
             const [row, col] = selectedCell.current;
             updateBoard(row, col, event.key);
+            selectedCell.current = null;
         }
     }
     function handleBlur(event){
