@@ -6,8 +6,22 @@ import copyBoard from '../scripts/copyBoard.js';
 export default function Game(){
     function handleClick(){
         boardColors.current.map(() => new Array(9).fill(null));
-        let newBoard = generateBoard(25);
+        let numStartingSquares;
+        if(difficulty.current === "Easy"){
+            numStartingSquares = 50;
+        }
+        else if(difficulty.current === "Medium"){
+            numStartingSquares = 35;
+        }
+        else if(difficulty.current === "Hard"){
+            numStartingSquares = 25;
+        }
+        else{
+            throw new Error(`difficulty.current is not one of the valid values: difficulty.current is ${difficulty.current}`);
+        }
+        let newBoard = generateBoard(numStartingSquares);
         for(let i = 0; i < newBoard.length; ++i){
+            originalBoard.current[i] = new Array(newBoard[i].length).fill(null);
             for(let j = 0; j < newBoard[i].length; ++j){
                 if(newBoard[i][j] !== null){
                     boardColors.current[i][j] = colors.startColor;
@@ -81,6 +95,7 @@ export default function Game(){
     const [board, setBoard] = useState(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const boardColors = useRef(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const originalBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
+    const difficulty = useRef('Easy');
     //colors refer to the drawing of the numbers on the sudoku board
     //startColor: numbers in the starting board
     //guessColor: numbers that you input into the board
@@ -99,11 +114,14 @@ export default function Game(){
                 originalBoard = {originalBoard}
             />
             <button onClick = {handleClick}>New Game</button>
-            <select>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-            </select>
+            <label>
+                Difficulty:
+                <select defaultValue="Easy" onChange = {(event) => difficulty.current = event.target.value}>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </label>
         </>
     )
 }
