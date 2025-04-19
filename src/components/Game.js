@@ -92,9 +92,18 @@ export default function Game(){
     
     return(
         <>
-            <Canvas board = {board} updateBoard = {(row, col, val, boardColors) => updateBoard(row, col, val, boardColors, colors.guessColor)} 
-            boardColors = {boardColors} colors = {colors}/>
+            <Canvas 
+                board = {board} 
+                updateBoard = {(row, col, val, boardColors) => updateBoard(row, col, val, boardColors, colors.guessColor)} 
+                boardColors = {boardColors} colors = {colors}
+                originalBoard = {originalBoard}
+            />
             <button onClick = {handleClick}>New Game</button>
+            <select>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
         </>
     )
 }
