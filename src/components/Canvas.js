@@ -13,6 +13,12 @@ export default function Canvas({board, updateBoard, boardColors, originalBoard})
         const xDelta = width / cols;
         let rowsMap = {}
         for(let row = 0; row <= rows; row++){
+            if(row % 3 == 0){
+                context.lineWidth = 2;
+            }
+            else{
+                context.lineWidth = 1;
+            }
             let y = Math.round(row * yDelta)
             rowsMap[row] = y;
             context.beginPath();
@@ -22,6 +28,12 @@ export default function Canvas({board, updateBoard, boardColors, originalBoard})
         }
         let colsMap = {}
         for(let col = 0; col <= cols; col++){
+            if(col % 3 == 0){
+                context.lineWidth = 2;
+            }
+            else{
+                context.lineWidth = 1;
+            }
             let x = Math.round(col * xDelta)
             colsMap[col] = x;
             context.beginPath();
