@@ -144,15 +144,14 @@ export default function Game(){
     const numCellsSolved = useRef(0);
     const solved = useRef(false);
     console.log('render game, solved is ', solved.current, ' numCellsSolved.current is ', numCellsSolved.current);
-    //colors refer to the drawing of the numbers on the sudoku board
+    //startColor correctColor and incorrectColor refer to the drawing of the numbers on the sudoku board
     //startColor: numbers in the starting board
-    //guessColor: numbers that you input into the board
     //correctColor: guesses that are correct when you finish/ click solve board
-    //incorrectColor: for when you input a number that contradicts with the current board state, ie same 2 numbers in row
-    //note: a number that is incorrect w.r.t to the final solution but has no current contradictions will be guessColor, not incorrectColor
-    let colors = {startColor:"black", correctColor: "green", incorrectColor: "red"}
+    //incorrectColor: for when you input a number that doesnt match with correct solution
+    let colors = {startColor:"black", correctColor: "green", incorrectColor: "red", backgroundColor: "rgb(240, 240, 245)", selectColor: "#9af5f2"}
     return(
         <>
+            <h1>Sudoku</h1>
             <Canvas 
                 board = {board} 
                 updateBoard = { updateBoard} 
@@ -172,6 +171,7 @@ export default function Game(){
                 numHints = {numHints}
                 numMistakes = {numMistakes}
                 solved = {solved}
+                difficulty = {difficulty}
             />
         </>
     )

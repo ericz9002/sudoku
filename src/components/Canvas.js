@@ -137,7 +137,7 @@ export default function Canvas({board, updateBoard, boardColors, colors, selecte
     }
 
     function selectCell(canvas, context, x, y){
-        const selectPosition = colorCell(canvas, context, x, y, "#9af5f2");
+        const selectPosition = colorCell(canvas, context, x, y, colors.selectColor);
         if(board[selectPosition[0]][selectPosition[1]] !== null){
             drawNum(canvas, context, selectPosition[0], selectPosition[1], 9, 9, board[selectPosition[0]][selectPosition[1]], boardColors);
         }
@@ -145,7 +145,7 @@ export default function Canvas({board, updateBoard, boardColors, colors, selecte
     }
 
     function unSelectCell(canvas, context, x, y){
-        colorCell(canvas, context, x, y, "white");
+        colorCell(canvas, context, x, y, colors.backgroundColor);
         const prevRow = selectedCell[0];
         const prevCol = selectedCell[1];
         if(board[prevRow][prevCol] !== null){
