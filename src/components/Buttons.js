@@ -10,6 +10,7 @@ export default function Button({newGame, solveBoard, solveCell, difficulty, sele
             <label>
                 Difficulty:
                 <select defaultValue="Easy" onChange = {(event) => difficulty.current = event.target.value}>
+                    <option value="Very Easy">Very Easy</option>
                     <option value="Easy">Easy</option>
                     <option value="Medium">Medium</option>
                     <option value="Hard">Hard</option>
