@@ -1,5 +1,6 @@
 import Canvas from './Canvas.js';
 import Buttons from './Buttons.js';
+import Stats from './Stats.js';
 import {generateBoard} from '../scripts/generateBoard.js';
 import {useRef, useState} from 'react';
 import copyBoard from '../scripts/copyBoard.js';
@@ -125,6 +126,10 @@ export default function Game(){
         setNumHints(numHints + 1);
         boardColors.current[selectedCell[0]][selectedCell[1]] = colors.correctColor;
         numCellsSolved.current += 1;
+        if(numCellsSolved.current === 81){
+            solved.current = true;
+        }
+        setSelectedCell(null);
     }
 
     const [timesRestarted, setTimesRestarted] = useState(0);
@@ -161,10 +166,13 @@ export default function Game(){
                 solveCell = {solveCell}
                 difficulty = {difficulty}
                 selectedCell = {selectedCell}
+                solved = {solved}
             />
-            <span>Hints used: {numHints}</span>
-            <span>Mistakes made: {numMistakes}</span>
-            {solved.current?"hello":"not solved"}
+            <Stats
+                numHints = {numHints}
+                numMistakes = {numMistakes}
+                solved = {solved}
+            />
         </>
     )
 }
