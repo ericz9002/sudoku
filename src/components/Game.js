@@ -2,9 +2,8 @@ import Canvas from './Canvas.js';
 import Buttons from './Buttons.js';
 import Stats from './Stats.js';
 import {generateBoard} from '../scripts/generateBoard.js';
-import {useRef, useState} from 'react';
+import {useRef, useState, useEffect} from 'react';
 import copyBoard from '../scripts/copyBoard.js';
-import Button from './Buttons.js';
 
 export default function Game(){
     function newGame(){
@@ -43,6 +42,7 @@ export default function Game(){
         setBoard(newBoard);
         setNumHints(0);
         setNumMistakes(0);
+        currentDifficulty.current = difficulty.current;
     }
 
     function updateBoard(row, col, val){
@@ -137,7 +137,9 @@ export default function Game(){
     const boardColors = useRef(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const originalBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
     const solvedBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
+    //difficulty represents what is in the difficulty select for when you click new game, currentDifficulty is the difficulty for current game
     const difficulty = useRef('Easy');
+    const currentDifficulty = useRef('Easy');
     const [selectedCell, setSelectedCell] = useState(null);
     const [numMistakes, setNumMistakes] = useState(0);
     const [numHints, setNumHints] = useState(0);
@@ -149,6 +151,8 @@ export default function Game(){
     //correctColor: guesses that are correct when you finish/ click solve board
     //incorrectColor: for when you input a number that doesnt match with correct solution
     let colors = {startColor:"black", correctColor: "green", incorrectColor: "red", backgroundColor: "rgb(240, 240, 245)", selectColor: "#9af5f2"}
+
+    useEffect(()=>newGame(), []);
     return(
         <>
             <h1>Sudoku</h1>
@@ -171,7 +175,7 @@ export default function Game(){
                 numHints = {numHints}
                 numMistakes = {numMistakes}
                 solved = {solved}
-                difficulty = {difficulty}
+                currentDifficulty = {currentDifficulty}
             />
         </>
     )
