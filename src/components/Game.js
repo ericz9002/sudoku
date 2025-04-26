@@ -1,7 +1,9 @@
 import Canvas from './Canvas.js';
+import Buttons from './Buttons.js';
 import {generateBoard} from '../scripts/generateBoard.js';
 import {useRef, useState} from 'react';
 import copyBoard from '../scripts/copyBoard.js';
+import Button from './Buttons.js';
 
 export default function Game(){
     function newGame(){
@@ -35,33 +37,18 @@ export default function Game(){
         setBoard(newBoard);
     }
 
-    function updateBoard(row, col, val, boardColors, validColor){
+    function updateBoard(row, col, val){
         let newBoard = copyBoard(board);
         const prevVal = newBoard[row][col];
         if(prevVal === val){
             return;
         }
         newBoard[row][col] = val;
-        let prevIncorrectEntries = validateEntry(newBoard, row, col, prevVal);
-        let duplicateEntries = validateEntry(newBoard, row, col, val);
-        if(boardColors.current[row][col] === colors.incorrectColor){
-            console.log('prevIncorrectEntries are ', prevIncorrectEntries);
-            for(let entry of prevIncorrectEntries){
-                if(originalBoard.current[entry[0]][entry[1]] === null){
-                    boardColors.current[entry[0]][entry[1]] = validColor;
-                }
-                else{
-                    boardColors.current[entry[0]][entry[1]] = colors.startColor;
-                }
-            }
-        }
-        if(duplicateEntries === null){
-            boardColors.current[row][col] = validColor;
+        if(val === solvedBoard.current[row][col]){
+            boardColors.current[row][col] = colors.correctColor;
         }
         else{
-            for(let entry of duplicateEntries){
-                boardColors.current[entry[0]][entry[1]] = colors.incorrectColor;
-            }
+            boardColors.current[row][col] = colors.incorrectColor;
         }
         setBoard(newBoard);
     }
@@ -111,12 +98,23 @@ export default function Game(){
         setBoard(solved);
     }
 
+    function solveCell(){
+        let newBoard = copyBoard(board);
+        let val = solvedBoard.current[selectedCell[0]][selectedCell[1]]
+        let prevVal = board[selectedCell[0]][selectedCell[1]]
+        newBoard[selectedCell[0]][selectedCell[1]] = val;
+        setBoard(newBoard);
+        boardColors.current[selectedCell[0]][selectedCell[1]] = colors.correctColor;
+    }
+
     const [timesRestarted, setTimesRestarted] = useState(0);
     const [board, setBoard] = useState(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const boardColors = useRef(new Array(9).fill(null).map(() => new Array(9).fill(null)))
     const originalBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
     const solvedBoard = useRef(new Array(9).fill(null).map(()=> new Array(9).fill(null)));
     const difficulty = useRef('Easy');
+    const [selectedCell, setSelectedCell] = useState(null);
+    console.log('rendered game');
     //colors refer to the drawing of the numbers on the sudoku board
     //startColor: numbers in the starting board
     //guessColor: numbers that you input into the board
@@ -125,25 +123,22 @@ export default function Game(){
     //incorrectColor: for when you input a number that contradicts with the current board state, ie same 2 numbers in row
     //note: a number that is incorrect w.r.t to the final solution but has no current contradictions will be guessColor, not incorrectColor
     let colors = {startColor:"black", guessColor:"grey", correctColor: "green", incorrectColor: "red"}
-    
     return(
         <>
             <Canvas 
                 board = {board} 
                 updateBoard = {(row, col, val, boardColors) => updateBoard(row, col, val, boardColors, colors.guessColor)} 
                 boardColors = {boardColors} colors = {colors}
-                originalBoard = {originalBoard}
+                selectedCell = {selectedCell}
+                setSelectedCell = {setSelectedCell}
             />
-            <button onClick = {newGame}>New Game</button>
-            <button onClick = {solveBoard}>Solve Board</button>
-            <label>
-                Difficulty:
-                <select defaultValue="Easy" onChange = {(event) => difficulty.current = event.target.value}>
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-            </label>
+            <Buttons
+                newGame = {newGame}
+                solveBoard = {solveBoard}
+                solveCell = {solveCell}
+                difficulty = {difficulty}
+                selectedCell = {selectedCell}
+            />
         </>
     )
 }

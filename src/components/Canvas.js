@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 
-export default function Canvas({board, updateBoard, boardColors, originalBoard}){
+export default function Canvas({board, updateBoard, boardColors, colors, selectedCell, setSelectedCell}){
     function drawGrid(canvas, context, rows, cols){
         if(rows <= 1 || cols <= 1){
             return
@@ -141,17 +141,17 @@ export default function Canvas({board, updateBoard, boardColors, originalBoard})
         if(board[selectPosition[0]][selectPosition[1]] !== null){
             drawNum(canvas, context, selectPosition[0], selectPosition[1], 9, 9, board[selectPosition[0]][selectPosition[1]], boardColors);
         }
-        selectedCell.current = selectPosition;
+        setSelectedCell(selectPosition);
     }
 
     function unSelectCell(canvas, context, x, y){
         colorCell(canvas, context, x, y, "white");
-        const prevRow = selectedCell.current[0];
-        const prevCol = selectedCell.current[1];
+        const prevRow = selectedCell[0];
+        const prevCol = selectedCell[1];
         if(board[prevRow][prevCol] !== null){
             drawNum(canvas, context, prevRow, prevCol, 9, 9, board[prevRow][prevCol], boardColors);
         }
-        selectedCell.current = null;
+        setSelectedCell(null);
     }
 
     function handleClick(event){
@@ -161,16 +161,17 @@ export default function Canvas({board, updateBoard, boardColors, originalBoard})
         const x = canvas.clientX = event.clientX - rect.left;
         const y = canvas.clientY = event.clientY - rect.top;
         const [row, col] = pixelToRowCol(canvas, x, y);
-        if (selectedCell.current !== null){
+        if (selectedCell !== null){
             const rowsMap = rowsColsMap.current.rowsMap;
             const colsMap = rowsColsMap.current.colsMap;
-            const prevCellX = colsMap[selectedCell.current[1]] + 1;
-            const prevCellY = rowsMap[selectedCell.current[0]] + 1;
-            if(originalBoard.current[row][col] !== null){
+            const prevCellX = colsMap[selectedCell[1]] + 1;
+            const prevCellY = rowsMap[selectedCell[0]] + 1;
+            console.log('boardColors.current[row][col] is ', boardColors.current[row][col]);
+            if(boardColors.current[row][col] === colors.startColor || boardColors.current[row][col] === colors.correctColor){
                 unSelectCell(canvas, context, prevCellX, prevCellY);
             }
             //check if the click is in the same cell as the previously selected cell
-            else if(x >= colsMap[selectedCell.current[1]] && x < colsMap[selectedCell.current[1] + 1] && y >= rowsMap[selectedCell.current[0]] && y < rowsMap[selectedCell.current[0] + 1]){
+            else if(x >= colsMap[selectedCell[1]] && x < colsMap[selectedCell[1] + 1] && y >= rowsMap[selectedCell[0]] && y < rowsMap[selectedCell[0] + 1]){
                 unSelectCell(canvas, context, prevCellX, prevCellY);
             }
             else{    
@@ -179,7 +180,7 @@ export default function Canvas({board, updateBoard, boardColors, originalBoard})
             }  
         }
         else{
-            if(originalBoard.current[row][col] === null){
+            if(board[row][col] === null || boardColors.current[row][col] === colors.incorrectColor){
                 selectCell(canvas, context, x, y);
             }
         }
@@ -187,33 +188,37 @@ export default function Canvas({board, updateBoard, boardColors, originalBoard})
 
     function handleKeyDown(event){
         const validKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        if(event.key in validKeys && selectedCell.current !== null){
+        if(event.key in validKeys && selectedCell !== null){
             const canvas = inputRef.current;
             const context = canvas.getContext('2d');
-            const [row, col] = selectedCell.current;
+            const [row, col] = selectedCell;
             if(parseInt(event.key) === board[row][col]){
                 return;
             }
-            updateBoard(row, col, parseInt(event.key), boardColors);
-            selectedCell.current = null;
+            updateBoard(row, col, parseInt(event.key));
+            setSelectedCell(null);
         }
     }
     function handleBlur(event){
-        if(selectedCell.current !== null){
+        if(event.relatedTarget !== null){
+            if(event.relatedTarget.id === "solveCell"){
+                return;
+            }
+        }
+        if(selectedCell !== null){
             const rowsMap = rowsColsMap.current.rowsMap;
             const colsMap = rowsColsMap.current.colsMap;
             const canvas = inputRef.current;
             const context = canvas.getContext('2d');
-            const prevCellX = colsMap[selectedCell.current[1]] + 1;
-            const prevCellY = rowsMap[selectedCell.current[0]] + 1;
+            const prevCellX = colsMap[selectedCell[1]] + 1;
+            const prevCellY = rowsMap[selectedCell[0]] + 1;
             unSelectCell(canvas, context, prevCellX, prevCellY);
-            selectedCell.current = null;
+            console.log(`selectedCell is ${selectedCell}`);
         }
     }
 
     const rowsColsMap = useRef([]);
     const inputRef = useRef();
-    const selectedCell = useRef(null);
     useEffect(()=>{
         const canvas = inputRef.current;
         const context = canvas.getContext('2d');
