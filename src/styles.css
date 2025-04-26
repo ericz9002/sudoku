@@ -33,3 +33,8 @@ canvas{
     display:flex;
     gap:10px;
 }
+
+.buttons label{
+    display:flex;
+    gap:5px;
+}
