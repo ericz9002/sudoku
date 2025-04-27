@@ -10,7 +10,7 @@ export default function Stats({numHints, numMistakes, solved, currentDifficulty}
         }
         return(
             <>
-                <p>{victoryMsg}</p>
+                <p id="victoryMsg">{victoryMsg}</p>
             </>
         )
     }

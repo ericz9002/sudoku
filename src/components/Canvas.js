@@ -166,7 +166,6 @@ export default function Canvas({board, updateBoard, boardColors, colors, selecte
             const colsMap = rowsColsMap.current.colsMap;
             const prevCellX = colsMap[selectedCell[1]] + 1;
             const prevCellY = rowsMap[selectedCell[0]] + 1;
-            console.log('boardColors.current[row][col] is ', boardColors.current[row][col]);
             if(boardColors.current[row][col] === colors.startColor || boardColors.current[row][col] === colors.correctColor){
                 unSelectCell(canvas, context, prevCellX, prevCellY);
             }
@@ -213,7 +212,6 @@ export default function Canvas({board, updateBoard, boardColors, colors, selecte
             const prevCellX = colsMap[selectedCell[1]] + 1;
             const prevCellY = rowsMap[selectedCell[0]] + 1;
             unSelectCell(canvas, context, prevCellX, prevCellY);
-            console.log(`selectedCell is ${selectedCell}`);
         }
     }
 
@@ -235,7 +233,7 @@ export default function Canvas({board, updateBoard, boardColors, colors, selecte
 
 
     return(
-        <canvas tabIndex="0" height="300" width="300" ref={inputRef} onClick = {(event) => {handleClick(event)}} 
+        <canvas id = "board" tabIndex="0" height="300" width="300" ref={inputRef} onClick = {(event) => {handleClick(event)}} 
         onKeyDown = {(event)=>{handleKeyDown(event)}} onBlur = {(event) => {handleBlur(event)}}></canvas>
     )
 }

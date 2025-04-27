@@ -1,6 +1,7 @@
 import Canvas from './Canvas.js';
 import Buttons from './Buttons.js';
 import Stats from './Stats.js';
+import Confetti from './Confetti.js';
 import {generateBoard} from '../scripts/generateBoard.js';
 import {useRef, useState, useEffect} from 'react';
 import copyBoard from '../scripts/copyBoard.js';
@@ -95,7 +96,6 @@ export default function Game(){
     }
 
     function solveBoard(){
-        console.log('in solveBoard()');
         for(let i = 0; i < board.length; ++i){
             for(let j  = 0; j < board[i].length; ++j){
                 if(originalBoard.current[i][j] !== null){
@@ -107,14 +107,11 @@ export default function Game(){
             }
         }
         let solvedBoardCopy = copyBoard(solvedBoard.current);
-        console.log('solved is ', solvedBoardCopy);
         setBoard(solvedBoardCopy);
         solved.current = true;
         const extraHints = 81 - numCellsSolved.current;
         setNumHints(numHints + extraHints);
         numCellsSolved.current = 81;
-        console.log('solveBoard, solved is ', solved.current);
-        console.log('finsihed solveBoard')
     }
 
     function solveCell(){
@@ -145,7 +142,6 @@ export default function Game(){
     const [numHints, setNumHints] = useState(0);
     const numCellsSolved = useRef(0);
     const solved = useRef(false);
-    console.log('render game, solved is ', solved.current, ' numCellsSolved.current is ', numCellsSolved.current);
     //startColor correctColor and incorrectColor refer to the drawing of the numbers on the sudoku board
     //startColor: numbers in the starting board
     //correctColor: guesses that are correct when you finish/ click solve board
@@ -177,6 +173,7 @@ export default function Game(){
                 solved = {solved}
                 currentDifficulty = {currentDifficulty}
             />
+            {solved.current?<Confetti/>:null}
         </>
     )
 }

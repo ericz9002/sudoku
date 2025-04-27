@@ -5,8 +5,9 @@
 
 body{
     background-color:rgb(240, 240, 245);
+    min-height:100vh;
 }
-canvas{
+#board{
     border:2px solid black;
 }
 
@@ -38,3 +39,9 @@ canvas{
     display:flex;
     gap:5px;
 }
+
+#victoryMsg{
+    font-size:30px;
+    color:green;
+}
+
