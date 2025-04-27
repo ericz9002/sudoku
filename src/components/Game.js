@@ -1,4 +1,4 @@
-import Canvas from './Canvas.js';
+import Board from './Board.js';
 import Buttons from './Buttons.js';
 import Stats from './Stats.js';
 import Confetti from './Confetti.js';
@@ -152,7 +152,7 @@ export default function Game(){
     return(
         <>
             <h1>Sudoku</h1>
-            <Canvas 
+            <Board
                 board = {board} 
                 updateBoard = { updateBoard} 
                 boardColors = {boardColors} colors = {colors}

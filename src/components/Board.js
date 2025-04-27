@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 
-export default function Canvas({board, updateBoard, boardColors, colors, selectedCell, setSelectedCell}){
+export default function Board({board, updateBoard, boardColors, colors, selectedCell, setSelectedCell}){
     function drawGrid(canvas, context, rows, cols){
         if(rows <= 1 || cols <= 1){
             return
