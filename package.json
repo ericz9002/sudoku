@@ -2,9 +2,11 @@
   "name": "sudoku",
   "version": "1.0.0",
   "main": "index.js",
+  "homepage": "https://ericz9002.github.io/sudoku",
   "scripts": {
     "start": "react-scripts start",
-    "test": "vitest"
+    "test": "vitest",
+    "deploy": "gh-pages -d build"
   },
   "author": "ericz9002",
   "license": "ISC",
@@ -29,6 +31,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "vitest": "^3.1.1"
   }
 }
