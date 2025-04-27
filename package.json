@@ -5,6 +5,7 @@
   "homepage": "https://ericz9002.github.io/sudoku",
   "scripts": {
     "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "vitest",
     "deploy": "gh-pages -d build"
   },
